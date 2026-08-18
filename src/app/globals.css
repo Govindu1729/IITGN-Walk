@@ -1,0 +1,585 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Subtle premium background tint that reads as "designed" rather than flat white */
+    background-image:
+      radial-gradient(at 0% 0%, oklch(0.96 0.02 180 / 0.5) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, oklch(0.97 0.015 160 / 0.4) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+  :is(.dark) body {
+    background-image:
+      radial-gradient(at 0% 0%, oklch(0.18 0.02 180 / 0.5) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, oklch(0.16 0.015 200 / 0.4) 0px, transparent 50%);
+  }
+}
+
+/* ── Custom keyframes & animation utilities ─────────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 4px 0 oklch(0.6 0.15 180 / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px 2px oklch(0.6 0.15 180 / 0.5);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out both;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.08); }
+  50% { transform: scale(0.97); }
+  75% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-card-enter {
+  animation: card-enter 0.35s ease-out both;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+.animate-gentle-bounce {
+  animation: gentle-bounce 2s ease-in-out infinite;
+}
+
+.animate-celebrate {
+  animation: celebrate 0.5s ease-out;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Staggered card animation delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+
+/* ── Custom scrollbar styling ───────────────────────────────────────── */
+
+.directions-panel::-webkit-scrollbar,
+.journey-history::-webkit-scrollbar {
+  width: 5px;
+}
+
+.directions-panel::-webkit-scrollbar-track,
+.journey-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.directions-panel::-webkit-scrollbar-thumb,
+.journey-history::-webkit-scrollbar-thumb {
+  background: oklch(0.55 0.1 180 / 0.35);
+  border-radius: 9999px;
+}
+
+.directions-panel::-webkit-scrollbar-thumb:hover,
+.journey-history::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.55 0.1 180 / 0.55);
+}
+
+/* Firefox scrollbar */
+.directions-panel,
+.journey-history {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.55 0.1 180 / 0.35) transparent;
+}
+
+/* Favorites chip row — amber-tinted thin scrollbar (Webkit + Firefox).
+   Mirrors the .directions-panel pattern but tuned to the favorites
+   amber accent so the scrollbar visually matches the chips it scrolls. */
+.favorites-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.favorites-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.favorites-scroll::-webkit-scrollbar-thumb {
+  background: oklch(0.7 0.12 75 / 0.4);
+  border-radius: 9999px;
+}
+
+.favorites-scroll::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.7 0.12 75 / 0.6);
+}
+
+.favorites-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.7 0.12 75 / 0.4) transparent;
+}
+
+/* ── Utility layer: glassmorphism ───────────────────────────────────── */
+
+@layer utilities {
+  .glass {
+    background: oklch(1 0 0 / 80%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(1 0 0 / 10%);
+    box-shadow:
+      0 4px 6px -1px oklch(0 0 0 / 0.05),
+      0 2px 4px -2px oklch(0 0 0 / 0.05);
+  }
+
+  :is(.dark *) .glass {
+    background: oklch(0.15 0 0 / 80%);
+    border: 1px solid oklch(1 0 0 / 8%);
+  }
+
+  /* Map dot-grid texture overlay (placed above the MapLibre canvas with
+     pointer-events:none). Slight teal tint matches the campus theme. */
+  .campus-texture {
+    background-image: radial-gradient(
+      circle,
+      oklch(0.55 0.12 180 / 0.18) 1px,
+      transparent 1.4px
+    );
+    background-size: 26px 26px;
+    mix-blend-mode: multiply;
+  }
+
+  :is(.dark *) .campus-texture {
+    background-image: radial-gradient(
+      circle,
+      oklch(0.7 0.12 180 / 0.15) 1px,
+      transparent 1.4px
+    );
+    mix-blend-mode: screen;
+  }
+
+  /* ── Premium card shadow system ──
+     A 3-tier elevation system inspired by Linear/Vercel.
+     Use `shadow-premium-1` for cards, `shadow-premium-2` for floating
+     elements, `shadow-premium-3` for popovers/dialogs. */
+  .shadow-premium-1 {
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 0.04),
+      0 1px 3px oklch(0 0 0 / 0.06);
+  }
+  .shadow-premium-2 {
+    box-shadow:
+      0 4px 6px -1px oklch(0 0 0 / 0.06),
+      0 2px 4px -2px oklch(0 0 0 / 0.04);
+  }
+  .shadow-premium-3 {
+    box-shadow:
+      0 10px 15px -3px oklch(0 0 0 / 0.08),
+      0 4px 6px -4px oklch(0 0 0 / 0.05);
+  }
+  :is(.dark *) .shadow-premium-1 {
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 0.25),
+      0 1px 3px oklch(0 0 0 / 0.35);
+  }
+  :is(.dark *) .shadow-premium-2 {
+    box-shadow:
+      0 4px 6px -1px oklch(0 0 0 / 0.4),
+      0 2px 4px -2px oklch(0 0 0 / 0.3);
+  }
+  :is(.dark *) .shadow-premium-3 {
+    box-shadow:
+      0 10px 15px -3px oklch(0 0 0 / 0.5),
+      0 4px 6px -4px oklch(0 0 0 / 0.35);
+  }
+
+  /* Hover-lift micro-interaction (use on interactive cards) */
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Skeleton shimmer (richer than the default bg-pulse) */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      oklch(0.95 0 0) 25%,
+      oklch(0.92 0 0) 50%,
+      oklch(0.95 0 0) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+  :is(.dark *) .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      oklch(0.22 0 0) 25%,
+      oklch(0.27 0 0) 50%,
+      oklch(0.22 0 0) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  /* Premium gradient text (used for KPI big numbers, hero text, etc.) */
+  .text-gradient-teal {
+    background: linear-gradient(135deg, oklch(0.55 0.13 180), oklch(0.6 0.14 160));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Focus-ring polish */
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    box-shadow:
+      0 0 0 2px oklch(1 0 0),
+      0 0 0 4px oklch(0.6 0.13 180 / 0.55);
+  }
+
+  /* ── Premium gradient overlay (for KPI cards on hover) ──
+     A subtle radial-gradient sheen that appears on hover, giving cards
+     a "premium" glassmorphic feel without being garish. */
+  .kpi-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at top right,
+      oklch(0.7 0.13 180 / 0.06),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .kpi-glow:hover::before {
+    opacity: 1;
+  }
+  :is(.dark *) .kpi-glow::before {
+    background: radial-gradient(
+      circle at top right,
+      oklch(0.6 0.13 180 / 0.18),
+      transparent 60%
+    );
+  }
+
+  /* ── Ambient chip motion ──
+     A very subtle floating motion for popular-routes / favorites chips,
+     so the chips feel "alive" rather than static. The motion is small
+     (1.5px) and slow (4s) so it doesn't distract. */
+  @keyframes ambient-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1.5px); }
+  }
+  .chip-ambient {
+    animation: ambient-float 4s ease-in-out infinite;
+    animation-delay: calc(var(--chip-idx, 0) * 0.4s);
+  }
+
+  /* ── Smart insights badge shimmer ──
+     A subtle moving sheen across a "smart insights" badge to draw
+     attention to AI-powered insights in the analytics tab. */
+  @keyframes smart-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .smart-insights-badge {
+    background: linear-gradient(
+      90deg,
+      oklch(0.55 0.13 180 / 0.12),
+      oklch(0.6 0.14 160 / 0.22),
+      oklch(0.55 0.13 180 / 0.12)
+    );
+    background-size: 200% 100%;
+    animation: smart-shimmer 3.5s ease-in-out infinite;
+  }
+
+  /* ── Glassmorphic planner card ──
+     A glassmorphic surface treatment for the planner card on mobile,
+     using a translucent background + backdrop-blur so the planner
+     appears as a "floating panel" over the map. */
+  .glass-planner {
+    background: oklch(1 0 0 / 70%);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid oklch(1 0 0 / 14%);
+  }
+  :is(.dark *) .glass-planner {
+    background: oklch(0.15 0 0.01 250 / 70%);
+    border: 1px solid oklch(1 0 0 / 8%);
+  }
+
+  /* ── "Recommended" badge shimmer ──
+     A subtle shimmer on the "Recommended" badge to draw the user's eye. */
+  @keyframes badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.7 0.14 160 / 0.45); }
+    50% { box-shadow: 0 0 0 4px oklch(0.7 0.14 160 / 0); }
+  }
+  .badge-recommended {
+    animation: badge-pulse 2.4s ease-in-out infinite;
+  }
+
+  /* ── "Start Journey" button gentle pulse ──
+     The primary call-to-action button gets a gentle attention-pulse
+     when both endpoints are set but the user hasn't started a journey. */
+  @keyframes cta-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.6 0.13 180 / 0); }
+    50% { box-shadow: 0 0 0 3px oklch(0.6 0.13 180 / 0.18); }
+  }
+  .cta-pulse {
+    animation: cta-pulse 2.8s ease-in-out infinite;
+  }
+
+  /* ── Voice navigation toggle: subtle pulse when enabled ──
+     The voice toggle button gets a very subtle attention-pulse
+     when voice navigation is ON, so the user has a non-intrusive
+     visual confirmation that announcements are active without
+     competing with the primary navigation UI. */
+  @keyframes voice-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.7 0.12 180 / 0); }
+    50% { box-shadow: 0 0 0 3px oklch(0.7 0.12 180 / 0.15); }
+  }
+  .voice-pulse {
+    animation: voice-pulse 2.4s ease-in-out infinite;
+  }
+  .kpi-fade-in {
+    animation: kpi-fade-in 300ms ease-out both;
+  }
+}
+
+/* ── Offline indicator banner slide-down animation ─────────────────── */
+
+@keyframes banner-slide-down {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.banner-slide-down {
+  animation: banner-slide-down 0.25s ease-out both;
+}
+
+/* ── KPI number fade-in animation (used by KpiCard count-up) ─── */
+
+@keyframes kpi-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

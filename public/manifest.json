@@ -1,0 +1,73 @@
+{
+  "name": "IITGN Walk — Campus Navigation",
+  "short_name": "IITGN Walk",
+  "description": "Campus-specific smart walking route & travel-time platform for IIT Gandhinagar",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0d9488",
+  "background_color": "#eef3ec",
+  "categories": ["navigation", "education", "travel"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "form": "narrow",
+      "label": "IITGN Walk home screen with map and route planner"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "form": "narrow",
+      "label": "Route comparison and turn-by-turn directions"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Find Routes",
+      "short_name": "Routes",
+      "description": "Open the route planner and compute walking routes",
+      "url": "/?tab=navigate",
+      "icons": [{ "src": "/logo.svg", "sizes": "96x96", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "My Journeys",
+      "short_name": "Journeys",
+      "description": "View past walks and replay GPS traces",
+      "url": "/?tab=history",
+      "icons": [{ "src": "/logo.svg", "sizes": "96x96", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Analytics",
+      "short_name": "Analytics",
+      "description": "See campus-wide walking speed and route reliability stats",
+      "url": "/?tab=analytics",
+      "icons": [{ "src": "/logo.svg", "sizes": "96x96", "type": "image/svg+xml" }]
+    }
+  ]
+}

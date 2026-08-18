@@ -1,0 +1,199 @@
+// IITGN Smart Walking Route — Prisma schema
+// NOTE: Environment uses SQLite (no PostGIS). Geographic geometry is stored
+// as Float lat/lng pairs and computed in TypeScript (haversine, etc.).
+// The schema mirrors the requested Postgres/PostGIS design so the data model
+// can be migrated 1:1 to PostGIS later (Float -> geometry(Point,4326)).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Campus points of interest & named locations (hostels, academic blocks, etc.)
+model Location {
+  id        String   @id @default(cuid())
+  /// stable slug e.g. "hostel-1", "ab3", "library"
+  slug      String   @unique
+  name      String
+  /// HOSTEL | ACADEMIC | CLASSROOM | LAB | LIBRARY | SPORTS | DINING | ADMIN | GATE | LANDMARK | OTHER
+  category  String
+  lng       Float
+  lat       Float
+  /// short human label shown on map
+  label     String?
+  /// longer description
+  notes     String?
+  /// optional id of the nearest RoadNode (entry point into the walking network)
+  entryNode String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([entryNode])
+}
+
+/// Road/path network vertices (intersections, entrances, decision points, gates)
+model RoadNode {
+  id     String @id @default(cuid())
+  /// stable slug e.g. "J-main-perimeter-N", "E-hostel5-entry"
+  slug   String @unique
+  lng    Float
+  lat    Float
+  /// INTERSECTION | ENTRANCE | GATE | DECISION | LANDMARK | BEND
+  kind   String
+  /// human-readable label
+  label  String?
+  /// links back to a Location (if this node IS a location entrance)
+  locationSlug String?
+
+  @@index([locationSlug])
+}
+
+/// Walkable edges of the campus network. Undirected in practice; both rows
+/// could be inserted, but for MVP we store one row per directed edge and the
+/// router treats them as bidirectional (the graph builder adds both directions).
+model RoadEdge {
+  id           String  @id @default(cuid())
+  /// stable slug e.g. "E-hostel5-to-J1"
+  slug         String  @unique
+  startNode    String
+  endNode      String
+  /// metres (computed via haversine, also stored for query/filter convenience)
+  distanceM    Float
+  /// seconds predicted for NORMAL mode (baseline; router scales by mode)
+  estTimeSec   Float
+  /// ROAD | PATH | SERVICE | INTERNAL | BRIDGE | STEPS
+  roadType     String
+  walkable     Boolean @default(true)
+  /// GOOD | PARTIAL | NONE
+  lighting     String?
+  /// CONCRETE | ASPHALT | TILES | DIRT | GRASS
+  surfaceType  String?
+  /// -1..1 (rise/run). Positive = uphill in the start->end direction.
+  slope        Float?
+  /// LOW | MEDIUM | HIGH
+  trafficLevel String?
+  /// free-form attributes for future ML / advanced cost
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  @@index([startNode, endNode])
+  @@index([roadType])
+}
+
+/// Configurable walking speed profiles. Defaults are tunable; the system
+/// writes campus-level + (optional) user-level rows once journeys accrue.
+model WalkingProfile {
+  /// composite key: mode + scope
+  id        String @id @default(cuid())
+  /// RELAXED | NORMAL | HURRY
+  mode      String
+  /// CAMPUS | USER
+  scope     String  @default("CAMPUS")
+  /// anonymized user handle (optional)
+  userId    String?
+  /// metres per second
+  speedMps  Float
+  /// number of journeys used to compute this speed
+  samples   Int     @default(0)
+  /// sum of distances & times used to compute speed (audit trail)
+  sumDistM  Float   @default(0)
+  sumTimeS  Float   @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@unique([mode, scope, userId])
+  @@index([mode])
+}
+
+/// A route computation result (snapshot at journey-start time)
+model RouteResult {
+  id           String   @id @default(cuid())
+  /// FASTEST | SHORTEST | EASIEST | ALTERNATIVE
+  objective    String
+  fromLocation String?
+  toLocation   String?
+  mode         String
+  distanceM    Float
+  durationS    Float
+  /// encoded GeoJSON LineString coordinates [[lng,lat,...]]
+  pathJson     String
+  /// ordered list of node slugs
+  nodeSlugsJson String
+  /// difficulty score 0..100 (lower = easier)
+  difficulty   Float?
+  /// human-readable reason the router chose this route
+  reason       String?
+  createdAt    DateTime @default(now())
+
+  @@index([fromLocation, toLocation])
+}
+
+/// An actual journey walked by a student
+model Journey {
+  id           String    @id @default(cuid())
+  /// anonymized handle (no PII). null = fully anonymous.
+  userId       String?
+  fromLocation String?
+  toLocation   String?
+  mode         String
+  /// the route id the student was asked to follow
+  routeId      String?
+  /// predicted duration at start (seconds) — used to compare predicted vs actual
+  predictedS   Float?
+  /// actual travel time in seconds
+  actualS      Float?
+  /// actual distance walked in metres (computed from GPS trace)
+  actualM      Float?
+  startTs      DateTime
+  endTs        DateTime?
+  /// COMPLETED | ABANDONED | IN_PROGRESS
+  status       String    @default("IN_PROGRESS")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([fromLocation, toLocation])
+  @@index([mode])
+  @@index([status])
+}
+
+/// GPS samples collected during a journey (privacy: no PII beyond coordinates)
+model GpsPoint {
+  id         String   @id @default(cuid())
+  journeyId  String
+  /// raw latitude from the browser Geolocation API
+  lat        Float
+  lng        Float
+  /// accuracy in metres reported by the browser
+  accuracyM  Float?
+  /// unix epoch ms (device time)
+  capturedTs DateTime
+  /// whether this point was map-matched to an edge
+  matched    Boolean  @default(false)
+  /// matched node slug (if matched to a node)
+  matchedNode String?
+
+  @@index([journeyId])
+  @@index([capturedTs])
+}
+
+/// Campus visual features (buildings, greens, courts, sports fields, water).
+/// This is the "campus map" dataset, kept separate from the routing graph
+/// so the map layer can be updated/verified independently of routing.
+model CampusFeature {
+  id        String   @id @default(cuid())
+  /// BUILDING | GREEN | COURT | SPORTS | WATER | PATH_FEATURE | LABEL
+  kind      String
+  name      String?
+  /// GeoJSON geometry as JSON string (Polygon / LineString / Point)
+  geomJson  String
+  /// optional fill/styling hints
+  color     String?
+  createdAt DateTime @default(now())
+
+  @@index([kind])
+}
