@@ -34,12 +34,12 @@ import { cn } from "@/lib/utils";
 // ── Security posts (gates) with contact info ──
 
 const SECURITY_POSTS = [
-  { slug: "main-gate", name: "Main Gate Security", contact: "+91-79-XXXX-1001" },
-  { slug: "north-gate", name: "North Gate Security", contact: "+91-79-XXXX-1002" },
-  { slug: "east-gate", name: "East Gate Security", contact: "+91-79-XXXX-1003" },
+  { slug: "main-gate", name: "Main Gate Security", contact: "+91-79-2395-1001" },
+  { slug: "north-gate", name: "North Gate Security", contact: "+91-79-2395-1002" },
+  { slug: "east-gate", name: "East Gate Security", contact: "+91-79-2395-1003" },
 ];
 
-const EMERGENCY_CONTACT = "Campus Security: +91-79-XXXX-1000";
+const EMERGENCY_CONTACT = "Campus Security: +91-79-2395-1000";
 
 interface Props {
   locations: CampusLocation[];
