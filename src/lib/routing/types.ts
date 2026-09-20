@@ -121,7 +121,7 @@ export interface JourneyRecord {
   actualM?: number;
   startTs: string;
   endTs?: string;
-  status: "IN_PROGRESS" | "COMPLETED" | "ABUSED" | "ABANDONED";
+  status: "IN_PROGRESS" | "COMPLETED" | "ABANDONED";
 }
 
 export interface GpsSample {
