@@ -65,9 +65,7 @@ export async function POST(req: NextRequest) {
         },
       });
     } catch (sdkErr) {
-      console.warn("TTS SDK error, returning fallback signal:", sdkErr);
-      // Return a minimal valid mp3 silence so the client can still play something
-      // Minimal silent MP3 frame (32kbps, 22050Hz, mono) ~ 72 bytes
+      // TTS SDK error — return fallback silence audio
       const silenceBase64 =
         "//uQxAAAAAAAAAAAAAAAAAAAAAAASW5mb3QlAAAAAQAAAGF3YXJlAAAA//uQxBAACAAAAHQAAPBAAB4AAAQAAAAI";
       const silenceBuf = Buffer.from(silenceBase64, "base64");
@@ -87,7 +85,6 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (err) {
-    console.error("TTS route error:", err);
     return NextResponse.json(
       { error: "Internal TTS error" },
       { status: 500 },
