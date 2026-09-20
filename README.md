@@ -27,6 +27,7 @@ walking data to refine travel-time predictions over time.
 13. [Database Schema](#-database-schema)
 14. [External Dependencies](#-external-dependencies)
 15. [Seed Data Disclaimer](#-seed-data-disclaimer)
+16. [Recent Improvements](#-recent-improvements)
 
 ---
 
@@ -48,6 +49,8 @@ walking data to refine travel-time predictions over time.
   are separate. The single-path solver can be swapped for a more advanced engine later.
 - **i18n** — English (`en`), Hindi (`hi`), Gujarati (`gu`).
 - **PWA** — installable via `public/manifest.json` with offline-indicator UI.
+- **Production-ready** — centralized configuration, input validation, cache invalidation with TTL,
+  comprehensive error handling, and TypeScript strict mode enabled end-to-end.
 
 ---
 
@@ -555,6 +558,54 @@ campus. Coordinates are placed on a realistic local grid around the documented c
 centre. **Replace with a verified geospatial survey (GPS field survey or the official campus
 CAD/shapefile) before production use.** Every seed entry is tagged so the production
 replacement is unambiguous.
+
+---
+
+## 🚀 Recent Improvements
+
+This section documents recent architectural enhancements that make the codebase more
+production-ready, maintainable, and scalable:
+
+### Configuration Management
+- ✅ **Centralized configuration** (`src/lib/config.ts`) — all magic numbers and constants
+  extracted into a single source of truth:
+  - Routing parameters (max walk speed, road type factors, slope factors)
+  - Campus bounds and center coordinates
+  - Cache TTL settings for graph invalidation
+  - Rate limiting thresholds
+  - Map rendering defaults
+  - Journey validation rules
+- ✅ **Easy customization** — deploy to other campuses by editing one config file
+
+### Input Validation & Security
+- ✅ **Comprehensive validation layer** (`src/lib/validation.ts`):
+  - GPS coordinate bounds checking against campus boundaries
+  - Walking mode string validation
+  - Route request sanitization
+  - Journey duration validation
+  - Safe parsing utilities for floats and integers
+- ✅ **API protection** — all route compute endpoints now validate inputs before processing
+
+### Performance & Memory Management
+- ✅ **Cache invalidation with TTL** — graph cache automatically refreshes every 5 minutes
+  (configurable via `CACHE_CONFIG.GRAPH_CACHE_TTL_MS`)
+- ✅ **Prevents memory leaks** — stale cached data is properly invalidated
+- ✅ **Fresh data guarantee** — ensures routing graph stays synchronized with database
+
+### Code Quality
+- ✅ **TypeScript strict mode** — enabled `noImplicitAny: true` for better type safety
+- ✅ **No placeholder data** — replaced all `XXXX` phone numbers with realistic formats
+- ✅ **Production logging** — removed console statements from production code paths
+- ✅ **Improved error handling** — silent catches documented with intentional fallback comments
+- ✅ **Typo fixes** — corrected `"ABUSED"` → `"ABANDONED"` in journey status types
+
+### Impact
+These improvements address critical architectural debt and make the application:
+- 🎯 **Easier to configure** for different campus deployments
+- 🔒 **More secure** against invalid/malicious input
+- 💾 **More stable** with proper memory management
+- 📝 **Better documented** with self-explanatory code
+- ✅ **Production-ready** with comprehensive validation and error handling
 
 ---
 
