@@ -1,4 +1,3 @@
-# ============================================================================
 # IITGN Walk — .gitignore
 # ============================================================================
 # Source-first: only project source, config, schema, assets, scripts and docs
@@ -107,3 +106,62 @@ local-*
 # ---------------------------------------------------------------------------
 prompt
 test
+
+```
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+*.env.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+.env
+.env.local
+
+# TypeScript/JavaScript
+*.tsbuildinfo
+*.js.map
+*.jsx.map
+*.ts.map
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Cache
+.cache/
+.mypy_cache/
+.pytest_cache/
+.nyc_output/
+```
