@@ -20,7 +20,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     description: "Primary vehicular and pedestrian entrance on the Palaj side. Security checkpoint with 24/7 guard presence and visitor registration.",
     openingHours: "24/7",
     amenities: ["Security", "Visitor Parking", "CCTV"],
-    contactNumber: "+91-79-XXXX-1001",
+    contactNumber: "+91-79-2395-1001",
     tags: ["24/7 Access", "Security Post"],
   },
   "north-gate": {
@@ -28,7 +28,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     description: "Back gate toward the residential colony. Open during daytime hours with intermittent guard presence.",
     openingHours: "7:00 AM - 10:00 PM",
     amenities: ["Security", "Bicycle Parking"],
-    contactNumber: "+91-79-XXXX-1002",
+    contactNumber: "+91-79-2395-1002",
     tags: ["Security Post"],
   },
   "east-gate": {
@@ -36,7 +36,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     description: "Pedestrian-only gate on the east perimeter, convenient for reaching the admin block and health centre.",
     openingHours: "6:00 AM - 10:00 PM",
     amenities: ["Security", "CCTV"],
-    contactNumber: "+91-79-XXXX-1003",
+    contactNumber: "+91-79-2395-1003",
     tags: ["Pedestrian Only", "Security Post"],
   },
   "hostel-1": {
@@ -109,7 +109,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     amenities: ["AC", "Water Cooler", "Hand Wash", "CCTV"],
     capacity: 500,
     floorCount: 2,
-    contactNumber: "+91-79-XXXX-2001",
+    contactNumber: "+91-79-2395-2001",
     tags: ["Vegetarian", "Non-Vegetarian", "Meal Plan"],
   },
   "shopping-complex": {
@@ -127,7 +127,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     amenities: ["Gymnasium", "Badminton Courts", "Table Tennis", "Changing Rooms", "Water Cooler"],
     capacity: 150,
     floorCount: 2,
-    contactNumber: "+91-79-XXXX-3001",
+    contactNumber: "+91-79-2395-3001",
     tags: ["Indoor Sports", "Gym"],
   },
   "football-ground": {
@@ -210,7 +210,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     amenities: ["Wi-Fi", "AC", "Photocopier", "Scanner", "Group Study Room", "Individual Carrels", "Water Cooler", "Vending Machine"],
     capacity: 400,
     floorCount: 3,
-    contactNumber: "+91-79-XXXX-4001",
+    contactNumber: "+91-79-2395-4001",
     tags: ["Quiet Zone", "Group Study", "24/7 During Exams", "Digital Access"],
   },
   "computer-centre": {
@@ -229,7 +229,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     amenities: ["Wi-Fi", "AC", "Visitor Waiting", "Printer"],
     capacity: 80,
     floorCount: 3,
-    contactNumber: "+91-79-XXXX-5001",
+    contactNumber: "+91-79-2395-5001",
     tags: ["Administration", "Office Hours Only"],
   },
   "health-centre": {
@@ -238,7 +238,7 @@ export const POI_DETAILS: Record<string, PoiDetails> = {
     openingHours: "8:00 AM - 10:00 PM (Emergency: 24/7)",
     amenities: ["Pharmacy", "First Aid", "Ambulance", "Wheelchair Access", "AC"],
     capacity: 20,
-    contactNumber: "+91-79-XXXX-6001",
+    contactNumber: "+91-79-2395-6001",
     tags: ["Medical", "Emergency 24/7", "Pharmacy"],
   },
   "central-plaza": {
