@@ -6,6 +6,7 @@
 // map (which reads from DB) and the router (which rebuilds the cache).
 
 import { db } from "../db";
+import { CACHE_CONFIG } from "../config";
 import {
   SEED_BUILDINGS,
   SEED_LOCATIONS,
@@ -18,6 +19,14 @@ import type { Graph } from "../routing/types";
 
 let seedPromise: Promise<void> | null = null;
 let graphCache: Graph | null = null;
+let cacheTimestamp: number = 0;
+
+/** Check if graph cache is stale based on TTL */
+function isCacheStale(): boolean {
+  if (!graphCache) return true;
+  const age = Date.now() - cacheTimestamp;
+  return age > CACHE_CONFIG.GRAPH_CACHE_TTL_MS;
+}
 
 /** Idempotently seed the DB. Safe to call multiple times. */
 export async function ensureSeeded(): Promise<void> {
@@ -131,11 +140,12 @@ async function doSeed(): Promise<void> {
 
   // invalidate graph cache after seeding
   graphCache = null;
+  cacheTimestamp = 0;
 }
 
-/** Load the in-memory graph from DB (cached, rebuilt on demand). */
+/** Load the in-memory graph from DB (cached, rebuilt on demand with TTL). */
 export async function getGraph(): Promise<Graph> {
-  if (graphCache) return graphCache;
+  if (graphCache && !isCacheStale()) return graphCache;
   await ensureSeeded();
   const [nodes, edges] = await Promise.all([
     db.roadNode.findMany(),
@@ -164,10 +174,12 @@ export async function getGraph(): Promise<Graph> {
     notes: e.notes,
   }));
   graphCache = buildGraph(rawNodes, rawEdges);
+  cacheTimestamp = Date.now();
   return graphCache;
 }
 
 /** Invalidate the in-memory graph cache (e.g. after graph edits). */
 export function invalidateGraphCache() {
   graphCache = null;
+  cacheTimestamp = 0;
 }
