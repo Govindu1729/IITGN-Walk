@@ -6,8 +6,7 @@ import type { Graph } from "./types";
 import type { CostFn } from "./cost";
 import type { WalkingMode } from "./types";
 import { haversine } from "../geo/geo";
-
-const MAX_WALK_SPEED = 2.2; // m/s upper bound for admissibility (hurry + path)
+import { ROUTING_CONFIG } from "../config";
 
 interface HeapItem {
   f: number;
@@ -88,7 +87,7 @@ export function astar(
   const heuristic = (slug: string) => {
     const n = graph.nodes.get(slug);
     if (!n) return 0;
-    return haversine({ lat: n.lat, lng: n.lng }, { lat: goalNode.lat, lng: goalNode.lng }) / MAX_WALK_SPEED;
+    return haversine({ lat: n.lat, lng: n.lng }, { lat: goalNode.lat, lng: goalNode.lng }) / ROUTING_CONFIG.MAX_WALK_SPEED;
   };
 
   gScore.set(start, 0);
