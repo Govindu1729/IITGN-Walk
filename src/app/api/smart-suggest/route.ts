@@ -91,13 +91,13 @@ export async function GET(req: NextRequest) {
         }
       }
     } catch (llmErr) {
-      console.warn("LLM smart-suggest failed, using heuristics:", llmErr);
+      // console.warn("LLM smart-suggest failed, using heuristics:", llmErr);
     }
 
     // Fallback: return heuristic suggestions
     return NextResponse.json({ suggestions, source: "heuristic" });
   } catch (err) {
-    console.error("Smart-suggest error:", err);
+    // console.error("Smart-suggest error:", err);
     return NextResponse.json(
       { error: "Internal smart-suggest error" },
       { status: 500 },
