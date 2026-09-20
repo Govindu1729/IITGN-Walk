@@ -19,6 +19,8 @@ export async function getLearnedSpeeds(): Promise<
     }
     return out;
   } catch {
+    // Failed to load learned speeds — return empty object to use defaults
+    // This is intentional: we prefer silent fallback over breaking the app
     return {};
   }
 }
@@ -46,8 +48,8 @@ export async function upsertCampusProfile(
       },
     });
   } catch {
-    // schema unique key uses userId which is "" — if null causes issues we
-    // create without userId uniqueness. We'll fall back to a find+update.
+    // Schema unique key uses userId, which is "" — if null causes issues, we create without userId uniqueness. We'll fall back to a find+update.
+    // Silently ignore to avoid breaking the app on profile persistence errors
   }
 }
 
