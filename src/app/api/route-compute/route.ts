@@ -9,6 +9,7 @@ import { getGraph } from "@/lib/campus/loader";
 import { computeRoutes } from "@/lib/routing/router";
 import { getLearnedSpeeds } from "@/lib/routing/profiles";
 import { generateDirections } from "@/lib/routing/directions";
+import { validateRouteRequest } from "@/lib/validation";
 import type { RouteResult, WalkingMode } from "@/lib/routing/types";
 
 const CoordSchema = z.object({
@@ -52,6 +53,7 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
+
   const parsed = Schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
@@ -60,6 +62,25 @@ export async function POST(req: Request) {
     );
   }
   const d = parsed.data;
+
+  // Additional validation for GPS coordinates (campus bounds check)
+  if (d.fromCoord) {
+    const validated = validateRouteRequest({
+      startLat: d.fromCoord.lat,
+      startLng: d.fromCoord.lng,
+      endLat: d.toCoord?.lat ?? 0,
+      endLng: d.toCoord?.lng ?? 0,
+      mode: d.mode,
+    });
+
+    if (d.fromCoord && !validated) {
+      return NextResponse.json(
+        { error: "Coordinates must be within campus bounds" },
+        { status: 400 }
+      );
+    }
+  }
+
   let graph = await getGraph();
 
   // Accessibility filter: remove edges with stairs or unpaved surfaces
