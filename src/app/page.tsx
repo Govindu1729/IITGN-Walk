@@ -166,8 +166,6 @@ export default function Home() {
           [c.bounds.sw.lng, c.bounds.sw.lat],
           [c.bounds.ne.lng, c.bounds.ne.lat],
         ]);
-    //   }, 200);
-    // }).catch((e) => console.error("campus load", e));
       });
     return () => {
       mounted = false;
