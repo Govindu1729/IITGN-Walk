@@ -12,6 +12,7 @@
 // re-survey one without touching the other.
 
 import { haversine } from "../geo/geo";
+import { CAMPUS_BOUNDS } from "../config";
 import {
   DEFAULT_SPEED_MPS,
   type EdgeRoadType,
@@ -23,8 +24,8 @@ import {
   type WalkingMode,
 } from "../routing/types";
 
-/** Documented IITGN campus centre (Palaj, Gandhinagar). */
-export const CAMPUS_CENTER = { lat: 23.21, lng: 72.685 };
+/** IITGN campus centre (Palaj, Gandhinagar) - from centralized config */
+export const CAMPUS_CENTER = CAMPUS_BOUNDS.CENTER;
 
 const M_PER_LAT = 111320;
 const M_PER_LNG = 111320 * Math.cos((CAMPUS_CENTER.lat * Math.PI) / 180);
