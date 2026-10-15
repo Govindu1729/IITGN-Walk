@@ -1,0 +1,139 @@
+# GitHub Issue Templates
+# Documentation: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests
+
+# =============================================================================
+# FEATURE REQUEST
+# =============================================================================
+
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement
+labels: ["feature-request"]
+assignees:
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please fill out the details below.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: What feature would you like to see?
+      placeholder: "Add offline map caching"
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: How would this feature help you or other users?
+      placeholder: "When walking in areas with poor signal..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Ideas
+      description: Any thoughts on how this could be implemented?
+      placeholder: "Use service worker to cache route requests..."
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low (nice to have)
+        - Medium (should add)
+        - High (must have)
+        - Critical (blocking)
+    validations:
+      required: true
+
+# =============================================================================
+# BUG REPORT
+# =============================================================================
+
+name: 🐛 Bug Report
+description: Report a bug to help improve the app
+labels: ["bug"]
+assignees:
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please provide as much detail as possible.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: What went wrong?
+      placeholder: "Routes not computing when selecting locations"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen?
+      placeholder: "Routes should display 4 options"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happens?
+      placeholder: "Error toast appears, no routes shown"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we recreate this?
+      placeholder: |
+        1. Go to homepage
+        2. Select Hostel 3 as From
+        3. Select AB1 as To
+        4. Click Find Routes
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Dev Server (localhost)
+        - Production (web app)
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & OS
+      placeholder: "Chrome 120 on macOS Sonoma"
+
+# =============================================================================
+# QUESTION
+# =============================================================================
+
+name: ❓ Question
+description: Ask about the project
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+    validations:
+      required: true
