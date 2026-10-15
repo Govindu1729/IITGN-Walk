@@ -1,0 +1,2 @@
+# Deployment Trigger
+This file exists to trigger Vercel to re-read the repository state.
