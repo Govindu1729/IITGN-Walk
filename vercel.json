@@ -7,6 +7,6 @@
   "regions": ["sin1"],
   "rewrites": [{ "source": "/api/:path*", "destination": "/api/:path*" }],
   "env": {
-    "DATABASE_URL": "@IITGN_WALK_DATABASE_URL"
+    "DATABASE_URL": "DATABASE_URL"
   }
 }
