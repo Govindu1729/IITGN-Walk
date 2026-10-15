@@ -1,14 +1,12 @@
-// IITGN Smart Walking Route — Prisma Schema
-// Supports both SQLite (dev) and PostgreSQL (prod) via DB_PROVIDER env var.
-// Migration path: SQLite -> Postgres requires running prisma migrate.
+// IITGN Smart Walking Route — Prisma Schema (PostgreSQL)
+// This schema supports production deployment with Neon PostgreSQL
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
-  provider = env("DB_PROVIDER")
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -167,6 +167,7 @@ export default function Home() {
           [c.bounds.ne.lng, c.bounds.ne.lat],
         ]);
       });
+    });
     return () => {
       mounted = false;
     };

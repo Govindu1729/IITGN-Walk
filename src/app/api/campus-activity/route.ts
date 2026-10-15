@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CAMPUS_BOUNDS, SEED_LOCATIONS, toLatLng } from "@/lib/campus/seed";
+import { CAMPUS_BOUNDS, CAMPUS_CENTER, SEED_LOCATIONS, toLatLng } from "@/lib/campus/seed";
 
 // ── Types ──
 

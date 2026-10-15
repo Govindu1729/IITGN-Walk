@@ -12,7 +12,7 @@
 // re-survey one without touching the other.
 
 import { haversine } from "../geo/geo";
-import { CAMPUS_BOUNDS } from "../config";
+import { CAMPUS_BOUNDS as CAMPUS_CONFIG } from "../config";
 import {
   DEFAULT_SPEED_MPS,
   type EdgeRoadType,
@@ -25,7 +25,7 @@ import {
 } from "../routing/types";
 
 /** IITGN campus centre (Palaj, Gandhinagar) - from centralized config */
-export const CAMPUS_CENTER = CAMPUS_BOUNDS.CENTER;
+export const CAMPUS_CENTER = CAMPUS_CONFIG.CENTER;
 
 const M_PER_LAT = 111320;
 const M_PER_LNG = 111320 * Math.cos((CAMPUS_CENTER.lat * Math.PI) / 180);
@@ -40,10 +40,12 @@ export function toLatLng(eastM: number, northM: number) {
 
 /** Campus bounding box in lat/lng (used by the map to fitBounds). */
 export const CAMPUS_BOUNDS = {
-  // ~520m west, 460m south, 360m east, 300m north of centre
+  // ~540m west, 480m south, 360m east, 300m north of centre
   sw: toLatLng(-540, -480),
   ne: toLatLng(360, 300),
 };
+
+
 
 // ---------------------------------------------------------------------------
 // LOCATIONS — campus points of interest (hostels, academic, facilities, gates)
