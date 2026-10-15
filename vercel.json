@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "bun run build",
+  "devCommand": "bun run dev",
+  "installCommand": "bun install",
+  "outputDirectory": ".next/standalone",
+  "regions": ["sin1", "hnd1"],
+  "env": {
+    "DATABASE_URL": "@IITGN_WALK_DATABASE_URL"
+  }
+}
