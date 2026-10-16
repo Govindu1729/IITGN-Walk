@@ -145,3 +145,19 @@ model CampusFeature {
 
   @@index([kind])
 }
+
+/// A shared route record (for community route sharing / public links).
+model SharedRoute {
+  id          String   @id @default(cuid())
+  /// e.g. r_abc123_def456
+  routeResult Json
+  fromLocation String?
+  toLocation   String?
+  mode         String
+  /// ISO timestamp when this share expires (null = never)
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([expiresAt])
+}

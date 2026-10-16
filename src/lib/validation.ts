@@ -43,23 +43,26 @@ export function isValidGPSPoint(
 
 /**
  * Validate walking mode string.
- * Returns true if the mode is one of the allowed values.
+ * Returns true if the mode is one of the allowed values (RELAXED | NORMAL | HURRY).
+ * Case-insensitive — accepts both legacy (leisure/normal/hurry) and current names.
  */
 export function isValidWalkingMode(mode: string): boolean {
-  const validModes = ["leisure", "normal", "hurry"];
-  return typeof mode === "string" && validModes.includes(mode.toLowerCase());
+  if (typeof mode !== "string") return false;
+  const m = mode.toUpperCase();
+  return m === "RELAXED" || m === "NORMAL" || m === "HURRY" || m === "LEISURE";
 }
 
 /**
  * Sanitize and validate route request parameters.
  * Returns validated parameters or null if invalid.
+ * Only the provided fields are validated; missing optional fields are allowed.
  */
 export interface RouteRequestParams {
-  startLat: number;
-  startLng: number;
-  endLat: number;
-  endLng: number;
-  mode: string;
+  startLat?: number;
+  startLng?: number;
+  endLat?: number;
+  endLng?: number;
+  mode?: string;
 }
 
 export function validateRouteRequest(
@@ -67,33 +70,26 @@ export function validateRouteRequest(
 ): RouteRequestParams | null {
   const { startLat, startLng, endLat, endLng, mode } = params;
 
-  // Validate all required fields exist
+  // Validate coordinates are numbers when provided
   if (
-    startLat === undefined ||
-    startLng === undefined ||
-    endLat === undefined ||
-    endLng === undefined ||
-    mode === undefined
+    (startLat !== undefined && typeof startLat !== "number") ||
+    (startLng !== undefined && typeof startLng !== "number") ||
+    (endLat !== undefined && typeof endLat !== "number") ||
+    (endLng !== undefined && typeof endLng !== "number")
   ) {
     return null;
   }
 
-  // Validate coordinates are numbers
-  if (
-    typeof startLat !== "number" ||
-    typeof startLng !== "number" ||
-    typeof endLat !== "number" ||
-    typeof endLng !== "number"
-  ) {
-    return null;
+  // Validate coordinates are within campus bounds when provided
+  if (startLat !== undefined && startLng !== undefined) {
+    if (!isValidCampusCoordinate(startLat, startLng)) return null;
+  }
+  if (endLat !== undefined && endLng !== undefined) {
+    if (!isValidCampusCoordinate(endLat, endLng)) return null;
   }
 
-  // Validate coordinates are within campus bounds
-  if (!isValidCampusCoordinate(startLat, startLng)) return null;
-  if (!isValidCampusCoordinate(endLat, endLng)) return null;
-
-  // Validate walking mode
-  if (!isValidWalkingMode(mode)) return null;
+  // Validate walking mode when provided
+  if (mode !== undefined && !isValidWalkingMode(mode)) return null;
 
   return {
     startLat,
