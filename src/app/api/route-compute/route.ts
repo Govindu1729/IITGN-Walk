@@ -10,6 +10,7 @@ import { computeRoutes } from "@/lib/routing/router";
 import { getLearnedSpeeds } from "@/lib/routing/profiles";
 import { generateDirections } from "@/lib/routing/directions";
 import { validateRouteRequest } from "@/lib/validation";
+import { apiBadRequest, apiServerError } from "@/lib/api-error";
 import type { RouteResult, WalkingMode } from "@/lib/routing/types";
 
 const CoordSchema = z.object({
@@ -51,15 +52,12 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return apiBadRequest("Invalid JSON body", "INVALID_BODY");
   }
 
   const parsed = Schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid request", issues: parsed.error.issues },
-      { status: 400 },
-    );
+    return apiBadRequest("Invalid request", "VALIDATION_ERROR", parsed.error.issues);
   }
   const d = parsed.data;
 

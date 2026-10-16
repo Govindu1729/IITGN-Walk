@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { recomputeCampusSpeeds } from "@/lib/routing/profiles";
+import { apiBadRequest, apiNotFound, apiServerError } from "@/lib/api-error";
 
 const GpsSchema = z.object({
   lat: z.number(),
@@ -30,7 +31,7 @@ export async function GET(
 ) {
   const { id } = await params;
   const journey = await db.journey.findUnique({ where: { id } });
-  if (!journey) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!journey) return apiNotFound("Journey not found", "JOURNEY_NOT_FOUND");
   const gps = await db.gpsPoint.findMany({
     where: { journeyId: id },
     orderBy: { capturedTs: "asc" },
@@ -47,19 +48,16 @@ export async function PATCH(
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return apiBadRequest("Invalid JSON body", "INVALID_BODY");
   }
   const parsed = PatchSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid request", issues: parsed.error.issues },
-      { status: 400 },
-    );
+    return apiBadRequest("Invalid request", "VALIDATION_ERROR", parsed.error.issues);
   }
   const d = parsed.data;
 
   const journey = await db.journey.findUnique({ where: { id } });
-  if (!journey) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!journey) return apiNotFound("Journey not found", "JOURNEY_NOT_FOUND");
 
   // Store GPS trace (privacy: only lat/lng/accuracy/timestamp + optional match)
   if (d.gpsTrace && d.gpsTrace.length) {

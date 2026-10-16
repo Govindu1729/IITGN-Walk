@@ -26,6 +26,7 @@ import {
   isEventPast,
   isEventUpcoming,
 } from "@/lib/campus/events";
+import { apiBadRequest } from "@/lib/api-error";
 
 export type EventStatusFilter = "upcoming" | "today" | "past" | "ongoing";
 

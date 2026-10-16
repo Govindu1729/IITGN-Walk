@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { apiBadRequest, apiServerError } from "@/lib/api-error";
 
 const CreateSchema = z.object({
   from: z.string().optional(),
@@ -22,14 +23,11 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return apiBadRequest("Invalid JSON body", "INVALID_BODY");
   }
   const parsed = CreateSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid request", issues: parsed.error.issues },
-      { status: 400 },
-    );
+    return apiBadRequest("Invalid request", "VALIDATION_ERROR", parsed.error.issues);
   }
   const d = parsed.data;
   const journey = await db.journey.create({
