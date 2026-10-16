@@ -3,8 +3,11 @@
 // Body: { routeResult, from, to, mode, expiresAt? }
 
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { withRateLimit } from "@/lib/rate-limit";
+import { apiBadRequest } from "@/lib/api-error";
 
 const ShareSchema = z.object({
   routeResult: z.object({
@@ -26,40 +29,43 @@ const ShareSchema = z.object({
   expiresAt: z.string().optional(),
 });
 
-export async function POST(req: Request) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
+export const POST = withRateLimit(
+  async (req: NextRequest): Promise<NextResponse> => {
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return apiBadRequest("Invalid JSON body", "INVALID_BODY");
+    }
 
-  const parsed = ShareSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Invalid request", issues: parsed.error.issues },
-      { status: 400 },
-    );
-  }
-  const d = parsed.data;
+    const parsed = ShareSchema.safeParse(body);
+    if (!parsed.success) {
+      return apiBadRequest("Invalid request", "VALIDATION_ERROR", parsed.error.issues);
+    }
+    const d = parsed.data;
 
-  const shareId = `r_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+    const shareId = `r_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
 
-  const sharedRoute = await db.sharedRoute.create({
-    data: {
-      id: shareId,
-      routeResult: JSON.stringify(d.routeResult),
-      fromLocation: d.fromLocation ?? null,
-      toLocation: d.toLocation ?? null,
-      mode: d.mode,
-      expiresAt: d.expiresAt ? new Date(d.expiresAt) : null,
-      createdAt: new Date(),
-    },
-  });
+    const sharedRoute = await db.sharedRoute.create({
+      data: {
+        id: shareId,
+        routeResult: d.routeResult,
+        fromLocation: d.fromLocation ?? null,
+        toLocation: d.toLocation ?? null,
+        mode: d.mode,
+        expiresAt: d.expiresAt ? new Date(d.expiresAt) : null,
+        createdAt: new Date(),
+      },
+    });
 
-  return NextResponse.json({
-    shareId,
-    shareUrl: `/shared/${shareId}`,
-    expiresAt: sharedRoute.expiresAt,
-  });
-}
+    return NextResponse.json({
+      shareId,
+      shareUrl: `/shared/${shareId}`,
+      expiresAt: sharedRoute.expiresAt,
+    });
+  },
+  {
+    maxRequests: 10,
+    windowMs: 60_000,
+  },
+);
