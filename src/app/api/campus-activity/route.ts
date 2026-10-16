@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { CAMPUS_BOUNDS, CAMPUS_CENTER, SEED_LOCATIONS, toLatLng } from "@/lib/campus/seed";
+import { apiServerError } from "@/lib/api-error";
 
 // ── Types ──
 
@@ -170,19 +171,23 @@ function generateHeatmap(walkers: ActiveWalker[]): HeatCell[] {
 }
 
 export async function GET() {
-  const now = new Date();
-  const hour = now.getHours();
-  const timeContext = getTimeContext(hour);
-  const walkers = generateWalkers(timeContext, now);
-  const heatmap = generateHeatmap(walkers);
+  try {
+    const now = new Date();
+    const hour = now.getHours();
+    const timeContext = getTimeContext(hour);
+    const walkers = generateWalkers(timeContext, now);
+    const heatmap = generateHeatmap(walkers);
 
-  const response: CampusActivityResponse = {
-    walkers,
-    heatmap,
-    totalWalkers: walkers.length,
-    timestamp: now.toISOString(),
-    timeContext,
-  };
+    const response: CampusActivityResponse = {
+      walkers,
+      heatmap,
+      totalWalkers: walkers.length,
+      timestamp: now.toISOString(),
+      timeContext,
+    };
 
-  return NextResponse.json(response);
+    return NextResponse.json(response);
+  } catch (err) {
+    return apiServerError("Failed to load campus activity", "ACTIVITY_LOAD_FAILED", err);
+  }
 }

@@ -26,7 +26,7 @@ import {
   isEventPast,
   isEventUpcoming,
 } from "@/lib/campus/events";
-import { apiBadRequest } from "@/lib/api-error";
+import { apiServerError } from "@/lib/api-error";
 
 export type EventStatusFilter = "upcoming" | "today" | "past" | "ongoing";
 
@@ -81,55 +81,59 @@ function parseBoolean(raw: string | null): boolean | undefined {
 }
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const category = parseCategory(url.searchParams.get("category"));
-  const status = parseStatus(url.searchParams.get("status"));
-  const featured = parseBoolean(url.searchParams.get("featured"));
-  const limitRaw = url.searchParams.get("limit");
-  const limit =
-    limitRaw !== null && /^\d+$/.test(limitRaw)
-      ? Math.max(1, parseInt(limitRaw, 10))
-      : undefined;
+  try {
+    const url = new URL(req.url);
+    const category = parseCategory(url.searchParams.get("category"));
+    const status = parseStatus(url.searchParams.get("status"));
+    const featured = parseBoolean(url.searchParams.get("featured"));
+    const limitRaw = url.searchParams.get("limit");
+    const limit =
+      limitRaw !== null && /^\d+$/.test(limitRaw)
+        ? Math.max(1, parseInt(limitRaw, 10))
+        : undefined;
 
-  // Apply filters in sequence.
-  let items = [...SAMPLE_EVENTS];
+    // Apply filters in sequence.
+    let items = [...SAMPLE_EVENTS];
 
-  if (category) {
-    items = items.filter((e) => e.category === category);
+    if (category) {
+      items = items.filter((e) => e.category === category);
+    }
+
+    if (status === "upcoming") {
+      items = items.filter(isEventUpcoming);
+    } else if (status === "today") {
+      items = items.filter(isEventToday);
+    } else if (status === "past") {
+      items = items.filter(isEventPast);
+    } else if (status === "ongoing") {
+      items = items.filter(isEventOngoing);
+    }
+
+    if (featured === true) {
+      items = items.filter((e) => e.isFeatured);
+    } else if (featured === false) {
+      items = items.filter((e) => !e.isFeatured);
+    }
+
+    // Sort: past → start DESC, everything else → start ASC.
+    const sortDesc = status === "past";
+    items.sort((a, b) => {
+      const ta = new Date(a.startTime).getTime();
+      const tb = new Date(b.startTime).getTime();
+      return sortDesc ? tb - ta : ta - tb;
+    });
+
+    // Apply limit AFTER sort so we keep the most relevant items.
+    const truncated = typeof limit === "number" ? items.slice(0, limit) : items;
+
+    const body: EventsListResponse = {
+      events: truncated,
+      total: truncated.length,
+      filters: { category, status, featured, limit },
+    };
+
+    return NextResponse.json(body);
+  } catch (err) {
+    return apiServerError("Failed to load events", "EVENTS_LOAD_FAILED", err);
   }
-
-  if (status === "upcoming") {
-    items = items.filter(isEventUpcoming);
-  } else if (status === "today") {
-    items = items.filter(isEventToday);
-  } else if (status === "past") {
-    items = items.filter(isEventPast);
-  } else if (status === "ongoing") {
-    items = items.filter(isEventOngoing);
-  }
-
-  if (featured === true) {
-    items = items.filter((e) => e.isFeatured);
-  } else if (featured === false) {
-    items = items.filter((e) => !e.isFeatured);
-  }
-
-  // Sort: past → start DESC, everything else → start ASC.
-  const sortDesc = status === "past";
-  items.sort((a, b) => {
-    const ta = new Date(a.startTime).getTime();
-    const tb = new Date(b.startTime).getTime();
-    return sortDesc ? tb - ta : ta - tb;
-  });
-
-  // Apply limit AFTER sort so we keep the most relevant items.
-  const truncated = typeof limit === "number" ? items.slice(0, limit) : items;
-
-  const body: EventsListResponse = {
-    events: truncated,
-    total: truncated.length,
-    filters: { category, status, featured, limit },
-  };
-
-  return NextResponse.json(body);
 }
