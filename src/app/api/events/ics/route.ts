@@ -9,6 +9,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { generateIcs } from "@/lib/campus/ics";
+import { apiBadRequest } from "@/lib/api-error";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -22,10 +23,7 @@ export async function GET(req: NextRequest) {
 
   // Validate that start/end look like parseable dates.
   if (isNaN(new Date(startTime).getTime()) || isNaN(new Date(endTime).getTime())) {
-    return NextResponse.json(
-      { error: "Invalid start or end date" },
-      { status: 400 },
-    );
+    return apiBadRequest("Invalid start or end date", "INVALID_DATE");
   }
 
   const ics = generateIcs({ title, description, startTime, endTime, venue, organizer });

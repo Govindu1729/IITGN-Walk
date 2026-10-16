@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiServerError } from "@/lib/api-error";
 
 export async function POST(req: NextRequest) {
   try {
@@ -85,9 +86,6 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (err) {
-    return NextResponse.json(
-      { error: "Internal TTS error" },
-      { status: 500 },
-    );
+    return apiServerError("Internal TTS error", "TTS_ERROR", err);
   }
 }

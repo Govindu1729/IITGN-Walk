@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiServerError } from "@/lib/api-error";
 
 export interface SmartSuggestion {
   from: string;
@@ -97,11 +98,7 @@ export async function GET(req: NextRequest) {
     // Fallback: return heuristic suggestions
     return NextResponse.json({ suggestions, source: "heuristic" });
   } catch (err) {
-    // console.error("Smart-suggest error:", err);
-    return NextResponse.json(
-      { error: "Internal smart-suggest error" },
-      { status: 500 },
-    );
+    return apiServerError("Internal smart-suggest error", "SMART_SUGGEST_ERROR", err);
   }
 }
 

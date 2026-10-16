@@ -7,6 +7,7 @@
 // expired (expiresAt > now).
 
 import { NextResponse } from "next/server";
+import { apiServerError } from "@/lib/api-error";
 
 export type AnnouncementCategory =
   | "EVENT"
@@ -98,22 +99,26 @@ const SAMPLE: Announcement[] = [
 /* ── Handler ─────────────────────────────────────────────────────────── */
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const activeOnly = url.searchParams.get("active") === "true";
-  const now = Date.now();
-  const items = activeOnly
-    ? SAMPLE.filter((a) => new Date(a.expiresAt).getTime() > now)
-    : SAMPLE;
-  // Sort by priority (HIGH first) then by recency
-  const orderRank: Record<AnnouncementPriority, number> = {
-    HIGH: 0,
-    MEDIUM: 1,
-    LOW: 2,
-  };
-  items.sort((a, b) => {
-    const pr = orderRank[a.priority] - orderRank[b.priority];
-    if (pr !== 0) return pr;
-    return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();
-  });
-  return NextResponse.json({ announcements: items });
+  try {
+    const url = new URL(req.url);
+    const activeOnly = url.searchParams.get("active") === "true";
+    const now = Date.now();
+    const items = activeOnly
+      ? SAMPLE.filter((a) => new Date(a.expiresAt).getTime() > now)
+      : SAMPLE;
+    // Sort by priority (HIGH first) then by recency
+    const orderRank: Record<AnnouncementPriority, number> = {
+      HIGH: 0,
+      MEDIUM: 1,
+      LOW: 2,
+    };
+    items.sort((a, b) => {
+      const pr = orderRank[a.priority] - orderRank[b.priority];
+      if (pr !== 0) return pr;
+      return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();
+    });
+    return NextResponse.json({ announcements: items });
+  } catch (err) {
+    return apiServerError("Failed to load announcements", "ANNOUNCEMENTS_LOAD_FAILED", err);
+  }
 }
