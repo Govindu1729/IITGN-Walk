@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiServerError } from "@/lib/api-error";
 
 /**
  * Simulated weather API for IITGN campus (Gandhinagar, Gujarat).
@@ -119,6 +120,10 @@ function getSimulatedWeather(): WeatherData {
 }
 
 export async function GET() {
-  const weather = getSimulatedWeather();
-  return NextResponse.json(weather);
+  try {
+    const weather = getSimulatedWeather();
+    return NextResponse.json(weather);
+  } catch (err) {
+    return apiServerError("Failed to load weather data", "WEATHER_LOAD_FAILED", err);
+  }
 }
