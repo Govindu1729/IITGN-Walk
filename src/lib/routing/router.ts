@@ -266,7 +266,11 @@ export function computeRoutes(
     }
   }
 
-  const speed = effectiveSpeed(req.mode, learned);
+  const speed = effectiveSpeed(
+    req.mode,
+    learned,
+    customization?.weatherImpactFactor,
+  );
   const customization = req.customization;
 
   // Pre-compute the ordered list of leg endpoints: [start, V1, V2, ..., Vn, goal].

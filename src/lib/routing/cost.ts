@@ -6,6 +6,7 @@
 //   - EASIEST  -> distance + penalties for slope/steps/darkness/traffic
 //
 // Walking speed is mode-dependent and (once data exists) campus-learned.
+// Weather impact factor reduces speed in adverse conditions (rain, extreme heat).
 
 import {
   DEFAULT_SPEED_MPS,
@@ -15,12 +16,14 @@ import {
   type WalkingMode,
 } from "./types";
 
-/** Resolve the effective walking speed (m/s) for a mode. */
+/** Resolve the effective walking speed (m/s) for a mode, with weather impact. */
 export function effectiveSpeed(
   mode: WalkingMode,
   learned?: Partial<Record<WalkingMode, number>>,
+  weatherImpactFactor = 1.0,
 ): number {
-  return learned?.[mode] ?? DEFAULT_SPEED_MPS[mode];
+  const base = learned?.[mode] ?? DEFAULT_SPEED_MPS[mode];
+  return base * Math.max(0.3, Math.min(1.5, weatherImpactFactor));
 }
 
 /**
@@ -33,6 +36,7 @@ export function effectiveSpeed(
  * - `preferSheltered`: reward edges with `lighting === "GOOD"` (treated as a
  *   proxy for shelter from sun/rain — typically covered or tree-lined walks).
  * - `avoidCrowds`: reward edges with `trafficLevel === "LOW"`.
+ * - `weatherImpactFactor`: global multiplier applied to walking speed (1.0 = normal).
  *
  * Default multipliers below are deliberately moderate so the chosen path
  * remains close to the optimal-cost route while nudging toward the user's
@@ -42,6 +46,8 @@ export interface RouteCustomization {
   avoidShaded?: boolean;
   preferSheltered?: boolean;
   avoidCrowds?: boolean;
+  /** Weather impact factor: 1.0 = normal speed, <1.0 = slower walking */
+  weatherImpactFactor?: number;
 }
 
 const SHADED_PENALTY = 1.6; // edges with NONE/PARTIAL lighting
