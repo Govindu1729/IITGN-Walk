@@ -1,4 +1,4 @@
-# IITGN Walk — Campus Navigation Intelligence
+# IITGN Walk - Campus Navigation Intelligence
 
 A **campus-specific** smart walking-route & travel-time platform for **IIT Gandhinagar (IITGN)**.
 
