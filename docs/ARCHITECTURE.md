@@ -132,7 +132,7 @@ Pure TypeScript, framework- and DB-free so it can be unit-tested in isolation.
 
 **Error handling:** Standardized error responses across all API routes (`invalid_request` / `server_error` shapes).
 
-**Rate limiting:** 100 requests/min per IP (config), with `X-RateLimit-Limit` / `X-RateLimit-Remaining` headers.
+**Rate limiting:** 30 requests/min per IP (`src/lib/config.ts` `RATE_LIMIT_CONFIG.MAX_REQUESTS_PER_MIN`), enforced by `src/lib/rate-limit.ts` (`withRateLimit`) with `X-RateLimit-Limit` / `X-RateLimit-Remaining` / `X-RateLimit-Reset` / `Retry-After` headers.
 
 ### 4.4 State & Data Fetching
 - **Zustand** stores (`src/hooks/use-app-store.ts`): app state, map state, planner state
@@ -177,7 +177,7 @@ Pure TypeScript, framework- and DB-free so it can be unit-tested in isolation.
 
 ## 7. Technological Advancements Relevant to IITGN Walk
 
-Reviewed as part of the 2026-10-22 morning checkup. Web search was unavailable (provider errors), so this list is drawn from internal knowledge of the stack's evolution through late 2025 / early 2026.
+Refreshed for the 2026-10-25 morning checkup. Live web research was unavailable this run — `web_search` (grok provider) returned HTTP 400 `provider_error` and `firecrawl_search` requires a `FIRECRAWL_API_KEY` that is not configured. This section is therefore drawn from internal knowledge of the stack's evolution through late 2025 / early 2026 and should be re-validated once a search provider is available.
 
 | Area | Advancement | Relevance to IITGN Walk | Action |
 |------|-------------|------------------------|--------|
@@ -216,5 +216,5 @@ This architecture doc should be revisited each morning checkup:
 
 ---
 
-*Last refreshed: 2026-10-22 (morning checkup)*
+*Last refreshed: 2026-10-25 (morning checkup)*
 *Source of truth: `src/lib/config.ts`, `src/lib/routing/types.ts`, `package.json`, `docs/API.md`*
